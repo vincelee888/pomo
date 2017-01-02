@@ -65,6 +65,14 @@ class App extends Component {
     if (this.getPomoState() === this.pomoState.notStarted) this.start()
   }
 
+  reset = () => {
+    this.pause()
+    this.setState({
+      startTime: null,
+      elapsedTime: 0
+    })
+  }
+
   getTimeLeft = () => {
     const pomoTime = this.state.pomoDurationInMinutes * msInMinute
     return pomoTime - this.state.elapsedTime
@@ -85,6 +93,7 @@ class App extends Component {
           <h3>{ formatTime(this.getTimeLeft()) }</h3>
         </div>
         <button onClick={ this.togglePomo }>{ this.getButtonText() }</button>
+        <button onClick={ this.reset }>Reset</button>
       </div>
     );
   }
