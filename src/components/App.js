@@ -18,9 +18,10 @@ class App extends Component {
 
   getNewTimer = () => {
     return window.setInterval(() => {
-      const elapsedTime = Date.now() - this.state.startTime
-      this.setState({elapsedTime})
-    }, 100)
+      this.setState({
+        elapsedTime: this.state.elapsedTime + 1000
+      })
+    }, 1000)
   }
 
   pomoState = {
@@ -35,7 +36,7 @@ class App extends Component {
 
   togglePomo = () => {
     console.log(this.getPomoState(), this.pomoState.running)
-    if (this.getPomoState() == this.pomoState.running) {
+    if (this.getPomoState() === this.pomoState.running) {
       window.clearInterval(this.state.timer)
       this.setState({
         timer: null,
