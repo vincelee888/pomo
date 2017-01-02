@@ -2,6 +2,9 @@ import React, { Component } from 'react';
 import logo from '../logo.svg';
 import '../App.css';
 
+import { lpad } from '../helpers/string'
+import { msInMinute, msInSecond } from '../helpers/time'
+
 class App extends Component {
   constructor() {
     super()
@@ -25,21 +28,12 @@ class App extends Component {
     }, 100)
   }
 
-  lpad = (str, padChar = '0', maxLength = 2) => {
-    str += ''
-    return str.length >= maxLength
-      ? str
-      : str + padChar.repeat(maxLength - str.length)
-  }
-
   formatTime = (elapsedTime) => {
-    const msInSecond = 1000
-    const msInMinute = 60 * msInSecond
     const pomoTime = this.state.pomoDurationInMinutes * msInMinute
     const timeLeft = pomoTime - elapsedTime
     const minutes = Math.floor(timeLeft / msInMinute)
     const seconds = Math.floor((timeLeft - minutes * msInMinute) / msInSecond)
-    return `${this.lpad(minutes)}:${this.lpad(seconds)}`
+    return `${lpad(minutes)}:${lpad(seconds)}`
   }
 
   render() {
