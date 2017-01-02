@@ -7,7 +7,7 @@ class App extends Component {
     super()
     this.state = {
       startTime: null,
-      elapsedTime: null,
+      elapsedTime: 0,
       isRunning: false
     }
   }
@@ -24,13 +24,29 @@ class App extends Component {
     }, 100)
   }
 
+  lpad = (str, padChar = '0', maxLength = 2) => {
+    str += ''
+    return str.length >= maxLength
+      ? str
+      : str + padChar.repeat(maxLength - str.length)
+  }
+
+  formatTime = (elapsedTime) => {
+    const minuteInMS = 60 * 1000
+    const pomoTime = 25 * minuteInMS
+    const timeLeft = pomoTime - elapsedTime
+    const minutes = Math.floor(timeLeft / minuteInMS)
+    const seconds = Math.floor((timeLeft - minutes * minuteInMS) / 1000)
+    return `${minutes}:${this.lpad(seconds)}`
+  }
+
   render() {
     return (
       <div className="App">
         <div className="App-header">
           <img src={logo} className="App-logo" alt="logo" />
           <h2>Welcome to Pomo</h2>
-          <h3>{this.state.elapsedTime}</h3>
+          <h3>{this.formatTime(this.state.elapsedTime)}</h3>
         </div>
         <button onClick={this.startPomo}>Start Pomo</button>
       </div>
