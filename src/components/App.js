@@ -2,8 +2,7 @@ import React, { Component } from 'react';
 import logo from '../logo.svg';
 import '../App.css';
 
-import { lpad } from '../helpers/string'
-import { msInMinute, msInSecond } from '../helpers/time'
+import { formatTime, msInMinute } from '../helpers/time'
 
 class App extends Component {
   constructor() {
@@ -28,27 +27,26 @@ class App extends Component {
     }, 100)
   }
 
-  formatTime = (elapsedTime) => {
+  getTimeLeft = () => {
     const pomoTime = this.state.pomoDurationInMinutes * msInMinute
-    const timeLeft = pomoTime - elapsedTime
-    const minutes = Math.floor(timeLeft / msInMinute)
-    const seconds = Math.floor((timeLeft - minutes * msInMinute) / msInSecond)
-    return `${lpad(minutes)}:${lpad(seconds)}`
+    return pomoTime - this.state.elapsedTime
   }
 
   render() {
     const buttonText = this.state.isRunning
       ? 'Pause'
       : 'Start Pomo'
+    
+    const elapsedTime = formatTime(this.getTimeLeft())
       
     return (
       <div className="App">
         <div className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
+          <img src={ logo } className="App-logo" alt="logo" />
           <h2>Welcome to Pomo</h2>
-          <h3>{this.formatTime(this.state.elapsedTime)}</h3>
+          <h3>{ elapsedTime }</h3>
         </div>
-        <button onClick={this.startPomo}>{buttonText}</button>
+        <button onClick={ this.startPomo }>{ buttonText }</button>
       </div>
     );
   }
