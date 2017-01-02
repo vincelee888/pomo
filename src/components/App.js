@@ -8,7 +8,7 @@ class App extends Component {
   constructor() {
     super()
     this.state = {
-      startTime: null,
+      hasStarted: false,
       elapsedTime: 0,
       isRunning: false,
       isOnBreak: false,
@@ -18,19 +18,23 @@ class App extends Component {
     }
   }
 
+  timeIsUp = (time) => {
+    const pomoTimeIsUp = () => time > this.state.pomoDurationInMinutes * msInMinute
+    const breakTimeIsUp = () => time > this.state.breakDurationInMinutes * msInMinute
+    
+    return this.state.isOnBreak
+      ? breakTimeIsUp()
+      : pomoTimeIsUp()
+  }
+
   getNewTimer = () => {
     return window.setInterval(() => {
       const elapsedTime = this.state.elapsedTime + msInSecond
 
-      if (elapsedTime > this.state.pomoDurationInMinutes * msInMinute && !this.state.isOnBreak) {
+      if (this.timeIsUp(elapsedTime)) {
         this.setState({
           elapsedTime: 0,
-          isOnBreak: true
-        })
-      } else if (elapsedTime > this.state.breakDurationInMinutes * msInMinute && this.state.isOnBreak) {
-        this.setState({
-          elapsedTime: 0,
-          isOnBreak: false
+          isOnBreak: !this.state.isOnBreak
         })
       } else {
         this.setState({ elapsedTime })
@@ -47,13 +51,13 @@ class App extends Component {
 
   getPomoState = () => {
     if (this.state.isRunning) return this.pomoState.running
-    if (!this.state.isRunning && this.state.startTime) return this.pomoState.paused
+    if (!this.state.isRunning && this.state.hasStarted) return this.pomoState.paused
     return this.pomoState.notStarted    
   }
 
   start = () => {
     this.setState({
-      startTime: new Date(),
+      hasStarted: true,
       isRunning: true,
       timer: this.getNewTimer()
     })
@@ -83,7 +87,7 @@ class App extends Component {
   reset = () => {
     this.pause()
     this.setState({
-      startTime: null,
+      hasStarted: false,
       elapsedTime: 0,
       isOnBreak: false
     })
