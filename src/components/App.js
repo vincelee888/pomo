@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import logo from '../logo.svg';
 import '../App.css';
 
-import { formatTime, msInMinute } from '../helpers/time'
+import { formatTime, msInMinute, msInSecond } from '../helpers/time'
 
 class App extends Component {
   constructor() {
@@ -11,23 +11,38 @@ class App extends Component {
       startTime: null,
       elapsedTime: 0,
       isRunning: false,
+      isOnBreak: false,
       pomoDurationInMinutes: 25,
+      breakDurationInMinutes: 5,
       timer: null
     }
   }
 
   getNewTimer = () => {
     return window.setInterval(() => {
-      this.setState({
-        elapsedTime: this.state.elapsedTime + 1000
-      })
-    }, 1000)
+      const elapsedTime = this.state.elapsedTime + msInSecond
+
+      if (elapsedTime > this.state.pomoDurationInMinutes * msInMinute && !this.state.isOnBreak) {
+        this.setState({
+          elapsedTime: 0,
+          isOnBreak: true
+        })
+      } else if (elapsedTime > this.state.breakDurationInMinutes * msInMinute && this.state.isOnBreak) {
+        this.setState({
+          elapsedTime: 0,
+          isOnBreak: false
+        })
+      } else {
+        this.setState({ elapsedTime })
+      }
+    }, msInSecond)
   }
 
   pomoState = {
     notStarted: 0,
     running: 1,
-    paused: 2
+    paused: 2,
+    onBreak: 3
   }
 
   getPomoState = () => {
@@ -69,12 +84,15 @@ class App extends Component {
     this.pause()
     this.setState({
       startTime: null,
-      elapsedTime: 0
+      elapsedTime: 0,
+      isOnBreak: false
     })
   }
 
   getTimeLeft = () => {
-    const pomoTime = this.state.pomoDurationInMinutes * msInMinute
+    const pomoTime = this.state.isOnBreak
+      ? this.state.breakDurationInMinutes * msInMinute
+      : this.state.pomoDurationInMinutes * msInMinute
     return pomoTime - this.state.elapsedTime
   }
 
@@ -84,9 +102,16 @@ class App extends Component {
     if (this.getPomoState() === this.pomoState.notStarted) return 'Start'
   }
 
+  getAppClass = () => {
+    const base = 'App'
+    return this.state.isOnBreak
+      ? `${base} break-time`
+      : base
+  }
+
   render() {
     return (
-      <div className="App">
+      <div className={this.getAppClass()}>
         <div className="App-header">
           <img src={ logo } className="App-logo" alt="logo" />
           <h2>Welcome to Pomo</h2>
