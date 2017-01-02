@@ -8,7 +8,8 @@ class App extends Component {
     this.state = {
       startTime: null,
       elapsedTime: 0,
-      isRunning: false
+      isRunning: false,
+      pomoDurationInMinutes: 25
     }
   }
 
@@ -32,12 +33,13 @@ class App extends Component {
   }
 
   formatTime = (elapsedTime) => {
-    const minuteInMS = 60 * 1000
-    const pomoTime = 25 * minuteInMS
+    const msInSecond = 1000
+    const msInMinute = 60 * msInSecond
+    const pomoTime = this.state.pomoDurationInMinutes * msInMinute
     const timeLeft = pomoTime - elapsedTime
-    const minutes = Math.floor(timeLeft / minuteInMS)
-    const seconds = Math.floor((timeLeft - minutes * minuteInMS) / 1000)
-    return `${minutes}:${this.lpad(seconds)}`
+    const minutes = Math.floor(timeLeft / msInMinute)
+    const seconds = Math.floor((timeLeft - minutes * msInMinute) / msInSecond)
+    return `${this.lpad(minutes)}:${this.lpad(seconds)}`
   }
 
   render() {
