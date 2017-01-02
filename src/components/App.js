@@ -37,6 +37,10 @@ class App extends Component {
   }
 
   render() {
+    const buttonText = this.state.isRunning
+      ? 'Pause'
+      : 'Start Pomo'
+      
     return (
       <div className="App">
         <div className="App-header">
@@ -44,7 +48,7 @@ class App extends Component {
           <h2>Welcome to Pomo</h2>
           <h3>{this.formatTime(this.state.elapsedTime)}</h3>
         </div>
-        <button onClick={this.startPomo}>Start Pomo</button>
+        <button onClick={this.startPomo}>{buttonText}</button>
       </div>
     );
   }
