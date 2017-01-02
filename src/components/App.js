@@ -26,34 +26,43 @@ class App extends Component {
 
   pomoState = {
     notStarted: 0,
-    running: 1
+    running: 1,
+    paused: 2
   }
 
   getPomoState = () => {
     if (this.state.isRunning) return this.pomoState.running
+    if (!this.state.isRunning && this.state.startTime) return this.pomoState.paused
     return this.pomoState.notStarted    
   }
 
+  start = () => {
+    this.setState({
+      startTime: new Date(),
+      isRunning: true,
+      timer: this.getNewTimer()
+    })
+  }
+
+  pause = () => {
+    window.clearInterval(this.state.timer)
+    this.setState({
+      timer: null,
+      isRunning: false
+    })
+  }
+
+  unpause = () => {
+    this.setState({
+      isRunning: true,
+      timer: this.getNewTimer()
+    })
+  }
+
   togglePomo = () => {
-    console.log(this.getPomoState(), this.pomoState.running)
-    if (this.getPomoState() === this.pomoState.running) {
-      window.clearInterval(this.state.timer)
-      this.setState({
-        timer: null,
-        isRunning: false
-      })
-    } else if (this.state.startTime) {
-      this.setState({
-        isRunning: true,
-        timer: this.getNewTimer()
-      })
-    } else {
-      this.setState({
-        startTime: new Date(),
-        isRunning: true,
-        timer: this.getNewTimer()
-      })
-    }
+    if (this.getPomoState() === this.pomoState.running) this.pause()
+    if (this.getPomoState() === this.pomoState.paused) this.unpause()
+    if (this.getPomoState() === this.pomoState.notStarted) this.start()
   }
 
   getTimeLeft = () => {
@@ -61,21 +70,21 @@ class App extends Component {
     return pomoTime - this.state.elapsedTime
   }
 
+  getButtonText = () => {
+    if (this.getPomoState() === this.pomoState.running) return 'Pause'
+    if (this.getPomoState() === this.pomoState.paused) return 'Resume'
+    if (this.getPomoState() === this.pomoState.notStarted) return 'Start'
+  }
+
   render() {
-    const buttonText = this.state.isRunning
-      ? 'Pause'
-      : 'Start Pomo'
-    
-    const elapsedTime = formatTime(this.getTimeLeft())
-      
     return (
       <div className="App">
         <div className="App-header">
           <img src={ logo } className="App-logo" alt="logo" />
           <h2>Welcome to Pomo</h2>
-          <h3>{ elapsedTime }</h3>
+          <h3>{ formatTime(this.getTimeLeft()) }</h3>
         </div>
-        <button onClick={ this.togglePomo }>{ buttonText }</button>
+        <button onClick={ this.togglePomo }>{ this.getButtonText() }</button>
       </div>
     );
   }
