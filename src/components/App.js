@@ -18,9 +18,9 @@ class App extends Component {
     }
   }
 
-  timeIsUp = (time) => {
-    const pomoTimeIsUp = () => time > this.state.pomoDurationInMinutes * msInMinute
-    const breakTimeIsUp = () => time > this.state.breakDurationInMinutes * msInMinute
+  timeIsUp = (elapsedTime) => {
+    const pomoTimeIsUp = () => elapsedTime > this.state.pomoDurationInMinutes * msInMinute
+    const breakTimeIsUp = () => elapsedTime > this.state.breakDurationInMinutes * msInMinute
     
     return this.state.isOnBreak
       ? breakTimeIsUp()
