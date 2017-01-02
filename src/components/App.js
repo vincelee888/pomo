@@ -11,20 +11,48 @@ class App extends Component {
       startTime: null,
       elapsedTime: 0,
       isRunning: false,
-      pomoDurationInMinutes: 25
+      pomoDurationInMinutes: 25,
+      timer: null
     }
   }
 
-  startPomo = () => {
-    this.setState({
-      startTime: new Date(),
-      isRunning: true
-    })
-
-    setInterval(() => {
+  getNewTimer = () => {
+    return window.setInterval(() => {
       const elapsedTime = Date.now() - this.state.startTime
       this.setState({elapsedTime})
     }, 100)
+  }
+
+  pomoState = {
+    notStarted: 0,
+    running: 1
+  }
+
+  getPomoState = () => {
+    if (this.state.isRunning) return this.pomoState.running
+    return this.pomoState.notStarted    
+  }
+
+  togglePomo = () => {
+    console.log(this.getPomoState(), this.pomoState.running)
+    if (this.getPomoState() == this.pomoState.running) {
+      window.clearInterval(this.state.timer)
+      this.setState({
+        timer: null,
+        isRunning: false
+      })
+    } else if (this.state.startTime) {
+      this.setState({
+        isRunning: true,
+        timer: this.getNewTimer()
+      })
+    } else {
+      this.setState({
+        startTime: new Date(),
+        isRunning: true,
+        timer: this.getNewTimer()
+      })
+    }
   }
 
   getTimeLeft = () => {
@@ -46,7 +74,7 @@ class App extends Component {
           <h2>Welcome to Pomo</h2>
           <h3>{ elapsedTime }</h3>
         </div>
-        <button onClick={ this.startPomo }>{ buttonText }</button>
+        <button onClick={ this.togglePomo }>{ buttonText }</button>
       </div>
     );
   }
