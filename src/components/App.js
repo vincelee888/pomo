@@ -121,7 +121,7 @@ class App extends Component {
           <h2>Welcome to Pomo</h2>
           <h3>{ formatTime(this.getTimeLeft()) }</h3>
         </div>
-        <button onClick={ this.togglePomo }>{ this.getButtonText() }</button>
+        <button className="toggle-btn" onClick={ this.togglePomo }>{ this.getButtonText() }</button>
         <button onClick={ this.reset }>Reset</button>
       </div>
     );
